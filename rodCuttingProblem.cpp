@@ -16,7 +16,7 @@ int rodCutRecursive(vector<int> prices, int n) {
     return answer;
 }
 
-int rodCutMemo(vector<int> prices, int n, map<int, int> sizePrice) {
+int rodCutMemo(vector<int> prices, int n, map<int, int> &sizePrice) {
     if (sizePrice.find(n) != sizePrice.end()) {
         return sizePrice[n];
     }

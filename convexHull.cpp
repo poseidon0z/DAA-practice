@@ -38,7 +38,7 @@ void grahamScan(vector<Point> points) {
 
     int lowest = 0;
     for (int i = 0; i < points.size(); i++) {
-        if (points[i].y < points[lowest].y || (points[i].y == points[lowest].y && points[i].x < points[lowest].y)) {
+        if (points[i].y < points[lowest].y || (points[i].y == points[lowest].y && points[i].x < points[lowest].x)) {
             lowest = i;
         }
     }
@@ -55,25 +55,30 @@ void grahamScan(vector<Point> points) {
 
     vector<Point> finalPoints;
     finalPoints.push_back(points[0]);
-    for (int i = 1; i < points.size(); i++) {
+    for (int i = 1; i < points.size() - 1; i++) {
         int cross = (points[i].y - points[0].y) * (points[0].x - points[i + 1].x) - (points[i].x - points[0].x) * (points[0].y - points[i + 1].y);
         if (cross != 0) {
             finalPoints.push_back(points[i]);
         }
     }
+    finalPoints.push_back(points[points.size() - 1]);
 
     stack<Point> hull;
     hull.push(finalPoints[0]);
     hull.push(finalPoints[1]);
     hull.push(finalPoints[2]);
 
-    for (int i = 3; i < finalPoints.size(); i++) {
-        Point temp = hull.top();
-        hull.pop();
-        Point temp2 = hull.top();
-        hull.push(temp);
-        while (hull.size() > 1 && cross(temp, temp2, finalPoints[i]) > 0) {
+    for (int i = 2; i < finalPoints.size(); i++) {
+        while (hull.size() > 1) {
+            Point top = hull.top();
             hull.pop();
+            Point nextToTop = hull.top();
+            if (cross(nextToTop, top, finalPoints[i]) <= 0) {
+                continue;
+            } else {
+                hull.push(top);
+                break;
+            }
         }
         hull.push(finalPoints[i]);
     }
